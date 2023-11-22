@@ -5,8 +5,10 @@ var ip_address = "192.168.1.25"
 var port = 23
 var level = 0
 var environment_variables = {}
+var emails = [] 
 var possible_variables = {"LANG":"en_AU", "LOGNAME":"Clarence", "HOME":"/home/user", "SHELL":"/bin/qsh", "TERM":"qterm", "USER":"clarence"}
 var subjects = ['Hobbies','Sports','Racing','School','Food','Music','Movies','TV Shows','Books','Video Games','Travel','Animals','Nature','Science','Math','Technology','Art','History','Literature','Philosophy','Psychology','Sociology','Economics','Politics','Current Events','Sports News','Entertainment News','Business News','Science News','Health News','Fashion','Beauty','Home and Garden','Parenting','Pets','Money','Travel','Cars','Gadgets','Lifestyle','Hobbies','DIY Projects']
+var contents = ['The quick brown fox jumps over the lazy dog.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.', 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit', 'sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.', 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet', 'consectetur, adipisci velit.', 'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.']
 var allowed_prefix = "192.0.3"
 var possible_prefixes = ["192.0.3", "128.50", "169.255.15", "100.128"]
 var connections = {}
@@ -28,7 +30,11 @@ func add_environment_variable():
 	var variable_value = possible_variables[environment_variable]
 	environment_variables[environment_variable] = variable_value
 	possible_variables.erase(environment_variable)
-	
+func add_mail():
+	var subject = subjects[randi() % len(subjects)]
+	var content = contents[randi() % len(contents)]
+	var email = {subject:content}
+	emails.append(email)
 func set_keyword(environment_variable, keyword):
 	if environment_variables.has(environment_variable):
 		environment_variables[environment_variable] = keyword
