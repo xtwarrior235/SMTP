@@ -6,7 +6,7 @@ var port = 23
 var level = 0
 var environment_variables = {}
 var possible_variables = {"LANG":"en_AU", "LOGNAME":"Clarence", "HOME":"/home/user", "SHELL":"/bin/qsh", "TERM":"qterm", "USER":"clarence"}
-
+var subjects = ['Hobbies','Sports','Racing','School','Food','Music','Movies','TV Shows','Books','Video Games','Travel','Animals','Nature','Science','Math','Technology','Art','History','Literature','Philosophy','Psychology','Sociology','Economics','Politics','Current Events','Sports News','Entertainment News','Business News','Science News','Health News','Fashion','Beauty','Home and Garden','Parenting','Pets','Money','Travel','Cars','Gadgets','Lifestyle','Hobbies','DIY Projects']
 var allowed_prefix = "192.0.3"
 var possible_prefixes = ["192.0.3", "128.50", "169.255.15", "100.128"]
 var connections = {}
