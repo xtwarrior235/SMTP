@@ -160,7 +160,6 @@ func tick(player, server):
 		var connection_ip = add_connection("dummy")
 		if connection_ip:
 			server.send_status(player.hacker_name, "game","TELNET: New inbound connection!")
-
 func get_criteria():
 	return "accept all connections from " + allowed_prefix
 
@@ -205,3 +204,4 @@ func parse_command(command, player, server):
 			server.change_score(player.team, -1)
 	else:
 		server.send_terminal_message(player.game_terminal_id, "INVALID TELNET COMMAND")
+		
