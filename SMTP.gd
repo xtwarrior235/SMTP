@@ -2,7 +2,7 @@ extends Node2D
 
 var role = "SMTP"
 var ip_address = "192.168.1.25"
-var port = 23
+var port = 25
 var level = 0
 var environment_variables = {}
 var emails = [] 
@@ -13,7 +13,9 @@ var allowed_prefix = "192.0.3"
 var possible_prefixes = ["192.0.3", "128.50", "169.255.15", "100.128"]
 var connections = {}
 var external_connections = []
-
+var directive = []
+var domainnames = ['@gmail.com','@yahoo.com','@brave.net','@dodo.net']
+var names = ['bill','josh','bob','jake','adam','tyson','coby','mick','oscar','mia','gary','pat','dom','paul','sandy','goku','gojo','nami']
 var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 #4 for testing, 2 in normal operation
@@ -33,11 +35,13 @@ func add_environment_variable():
 func add_mail():
 	var subject = subjects[randi() % len(subjects)]
 	var content = contents[randi() % len(contents)]
-	var email = {subject:content}
+	var email = {"subject":subject, "content":content}
 	emails.append(email)
-func set_keyword(environment_variable, keyword):
-	if environment_variables.has(environment_variable):
-		environment_variables[environment_variable] = keyword
+	
+func set_keyword(keyword):
+	#generate a random int to pick an element from emails
+	var emailnumber = randi() % len(emails)
+	emails[emailnumber]['content'] = keyword
 
 func add_keyword(sender, receiver, server, keyword):
 	print("pushing " + keyword + " to " + receiver.hacker_name)
@@ -131,7 +135,11 @@ func expire_connections(server):
 		if connections[connection] <= 0:
 			expired[connection] = remove_connection(connection, server)
 	return expired
-
+#for directive string (domain | sender etc
+func randomemail():
+	var sendname = names[randi() % len(names)]
+	var domainname = domainnames[randi() % len(domainnames)]
+	return sendname + domainname
 #Generic function - executes whenever the game server ticks (currently once per second)
 func tick(player, server):
 	var items = expire_connections(server)
