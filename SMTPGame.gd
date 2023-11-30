@@ -11,7 +11,7 @@ var directivesubjects = ["CUR", "DAD", "UAT", "CTP", "SIB", "VNI", "NIA", "DPI",
 var directivecontents = ["neon pulse","binary folds","data storm","encrypted vault","metropolis ticks","virtual underworld","Data mercenaries","neural pathways","neural net","dark web","static hum","quantum fabric","neon-lit underbelly","city sleeps","darkest deeds","encrypted whispers","encrypted folds","quantum shadows","black market","the realm"]
 var connections = {}
 var external_connections = []
-var directive = []
+var currentdirective = ''
 var domainnames = ['neon.wn','neural.nn','nexus.vp','crypt.vz', 'pixv.qr', 'maze.cr', 'quant.wn']
 var names = ['bill','josh','bob','jake','adam','tyson','coby','mick','oscar','mia','gary','pat','dom','paul','sandy','goku','gojo','nami']
 var rng : RandomNumberGenerator = RandomNumberGenerator.new()
@@ -83,7 +83,7 @@ func list_emails():
 func list_connections():
 	return "\n" + "\n".join(connections.keys())
 
-func create_directives(player, server):
+func create_directive(player, server):
 	var domain = domainnames[randi() % len(domainnames)]
 	var recpdomain = domainnames[randi() % len(domainnames)]
 	var singlecontent = directivecontents[randi() % len(directivecontents)]
@@ -123,49 +123,29 @@ func randomemail():
 #The SMTP tick doesn't do too much - it should send a new directive if the old one has been fulfilled
 #Occasionally send a directive to allow a phishing email to be sent - say every 45 seconds or so, if one hasn't already been sent
 func tick(player, server):
-	pass
-	"""
-	var items = expire_connections(server)
-	for item in items:
-		if items[item]:
-			server.send_status(player.hacker_name, "game", "Intel lost to " + item)
-			server.change_intel(player.team, -1)
-		else:
-			server.send_status(player.hacker_name, "game", "Intel gained from " + item)
-			server.change_score(player.team, 1)
-	if player.wait_time <= 0:
-		player.wait_time = rng.randi_range(5,15)
-
-		var criteria = get_criteria()
-		if player.criteria != criteria:
-			player.criteria = criteria
-			server.message_random_team_mate(player, "TELNET @ " + player.game_ip_address + ": " + criteria)
-		var connection_ip = add_connection("dummy")
-		if connection_ip:
-			server.send_status(player.hacker_name, "game","TELNET: New inbound connection!")
-	"""
+	if currentdirective == '':
+		create_directive(player, server)
+		expire_connections(server)
 
 #How often should you level up? How often are you rewarded for it?
 #Probably once per directive is fine due to the vulnerable nature of the server
 func level_up():
 	level += 1
-	if level % 5 == 0:
-		add_mail_item()
+	add_mail_item()
 
 #Check for commands that an attacker can use in this function
 #You will need to parse two attacker commands: view emails and read <subject>
 func parse_attacker_command(command, player, server):
-	pass
-	"""
-	if command == "env":
-		server.send_terminal_message(player.command_terminal_id, list_environment_variables())
-	elif command.begins_with("printenv"):
-		var arguments = command.split(" ")
-		if len(arguments) == 2 and environment_variables.has(arguments[1]):
-			server.send_terminal_message(player.command_terminal_id, get_variable(arguments[1]))
+	if command == 'view emails':
+		server.send_terminal_message(emails.keys().shuffle)
+	elif command.begins_with('read'):
+		var requestedsubject = command.right(5)
+		if subjects.has(requestedsubject):
+			server.send_terminal_message(player.command_terminal_id, subjects[requestedsubject])
+		else:
+			server.send_terminal_message(player.command_terminal_id, 'EMAIL NOT FOUND')
 	else:
-		server.send_terminal_message(player.command_terminal_id, "INVALID TELNET COMMAND")
-	"""
+		server.send_terminal_message(player.command_terminal_id, "INVALID SMTP COMMAND")
 
 #Check for commands that the owner can use in this function
 #You will need to parse the following:
