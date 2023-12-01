@@ -47,7 +47,7 @@ if terminal_api.connect(terminal):
         console.print('''
         __________________________
         |\                      /|
-        | \        ASCII       / |
+        | \        SMTP        / |
         |  \  (/◕ヮ◕)/ (◠‿◠)  /  | 
         |  /\________________/\  | 
         | /                    \ | 
