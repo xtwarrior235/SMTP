@@ -1,8 +1,8 @@
 extends Node2D
 
-var role = "SMTP"
+var role = "smtp"
 var ip_address = "192.168.1.25"
-var port = 25
+var port = 110
 var level = 0
 var emails = {}
 var subjects = ["Critical Update Required", "Data Anomaly Detected", "Unsanctioned Access Traced", "Cryptic Transaction Pending", "Systemic Integrity Breach", "Virtual Nexus Infiltration", "Neural Interface Alert", "Decryption Protocol Initiated", "Incognito Surveillance Alert", "Binary Echoes Unveiled", "Chrono-Encryption Breach", "Shadow Network Intrusion", "Code Red Surveillance Notice", "Darknet Consortium Summons", "Synchronicity Protocol Violation", "Clandestine Data Exchange Required", "Silent Encryption Compromise", "Chronos Directive Issued", "Echo Chamber Surveillance", "Binary Veil Unraveling"]
@@ -10,7 +10,6 @@ var contents = ["The neon pulse of the city conceals the shadows of our transact
 var directivesubjects = ["CUR", "DAD", "UAT", "CTP", "SIB", "VNI", "NIA", "DPI", "ISA", "BEU", "CEB", "SNI", "CRS", "DCS", "SPV", "CDR", "SEC", "CDI", "ECS", "BVU"]
 var directivecontents = ["neon pulse","binary folds","data storm","encrypted vault","metropolis ticks","virtual underworld","Data mercenaries","neural pathways","neural net","dark web","static hum","quantum fabric","neon-lit underbelly","city sleeps","darkest deeds","encrypted whispers","encrypted folds","quantum shadows","black market","the realm"]
 var connections = {}
-var external_connections = []
 var currentdirective = ''
 var domainnames = ['neon.wn','neural.nn','nexus.vp','crypt.vz', 'pixv.qr', 'maze.cr', 'quant.wn']
 var names = ['bill','josh','bob','jake','adam','tyson','coby','mick','oscar','mia','gary','pat','dom','paul','sandy','goku','gojo','nami']
@@ -90,10 +89,13 @@ func create_directive(player, server):
 	var singlesubject = directivesubjects[randi() % len(directivesubjects)]
 	var fullemail = randomemail()
 	var directive = domain + '|' + singlesubject + '|' + fullemail + '|' + recpdomain + '|' + singlecontent
+	currentdirective = directive
 	server.send_status(player.hacker_name, "directive", directive)
-	
-	#Pick a domain, single word subject, sender @ domain, recp @ domain and single word contents
-	#Send that directive to the user
+
+func add_connection(new_ip):
+	var ttl = rng.randi_range(15,25)
+	connections[new_ip] = ttl
+	return str(ttl)
 
 #Remove connection only removes attackers who are connected to this server
 #This is passive - attackers are automatically bumped after a time limit
@@ -137,11 +139,11 @@ func level_up():
 #You will need to parse two attacker commands: view emails and read <subject>
 func parse_attacker_command(command, player, server):
 	if command == 'view emails':
-		server.send_terminal_message(emails.keys().shuffle)
+		server.send_terminal_message(player.command_terminal_id, list_emails())
 	elif command.begins_with('read'):
 		var requestedsubject = command.right(5)
-		if subjects.has(requestedsubject):
-			server.send_terminal_message(player.command_terminal_id, subjects[requestedsubject])
+		if emails.has(requestedsubject):
+			server.send_terminal_message(player.command_terminal_id, emails[requestedsubject])
 		else:
 			server.send_terminal_message(player.command_terminal_id, 'EMAIL NOT FOUND')
 	else:
@@ -153,6 +155,30 @@ func parse_attacker_command(command, player, server):
 #port shift (exactly the same code as in telnet)
 #spam filter (costs 10 intel, but doubles the opposing teams scan ip/portscan/connection costs for 1 minute)
 func parse_command(command, player, server):
+	print(command)
+	if command == 'test':
+		server.change_score(player.team, 1)
+		pass
+	elif command == "port shift":
+		var intel_cost = server.intel_costs["port shift"]
+		if server.get_team_intel(player.team) >= intel_cost:
+			server.change_intel(player.team, -1 * intel_cost)
+			port = rng.randi_range(port+1, port+20)
+			server.send_terminal_message(player.game_terminal_id, "Port changed to " + str(port))
+			server.play_sound("port_shift")
+		else:
+			server.send_terminal_message(player.game_terminal_id, "Insufficient intel to shift ports (<"+str(intel_cost)+")")
+	else:
+		server.send_terminal_message(player.game_terminal_id, "INVALID SMTP COMMAND")
+	
+	
+	
+	
+	
+	
+	"""
+	if command.begins_with == "HELO"
+	
 	if command == "show cnx":
 		server.send_terminal_message(player.game_terminal_id, list_connections())
 	elif command.begins_with("kick "):
@@ -184,5 +210,5 @@ func parse_command(command, player, server):
 		else:
 			server.send_terminal_message(player.game_terminal_id, "Insufficient intel to shift ports (<"+str(intel_cost)+")")
 	else:
-		server.send_terminal_message(player.game_terminal_id, "INVALID TELNET COMMAND")
-		
+		server.send_terminal_message(player.game_terminal_id, "INVALID SMTP COMMAND")
+	"""
