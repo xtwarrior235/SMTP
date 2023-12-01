@@ -61,7 +61,7 @@ if terminal_api.connect(terminal):
         if message == 'HELO':
             if smtpcommand == 'HELO':
                 mode = 'email'
-                smtpcommand = 'DIR'
+                smtpcommand = 'MAIL FROM'
                 
             else:
                 print("Syntax Error")
@@ -69,15 +69,8 @@ if terminal_api.connect(terminal):
 
 
         elif mode == 'email':
-            if message.startswith('DIRECTIVE:'):
-                if smtpcommand == 'DIR':
-                    smtpcommand = 'MAIL FROM'
-                    email.append(message)
-                    
-                else:
-                    print("Syntax Error")
-                    reset()
-            elif message.startswith('MAIL FROM:'):
+            
+            if message.startswith('MAIL FROM:'):
                 if smtpcommand == 'MAIL FROM':
                     smtpcommand = 'RCPT TO'
                     email.append(message)
